@@ -1,5 +1,7 @@
 # Agentic AI Kanban SaaS
 
+<img width="1465" height="860" alt="Screenshot 2026-07-02 at 11 32 47 PM" src="https://github.com/user-attachments/assets/14a79eb1-4596-4379-8bc6-4e7aa598b252" />
+
 ## About the Project
 
 This project is a full-stack Agentic AI SaaS application that combines a Kanban task management system with an AI assistant. Instead of manually creating and organizing tasks, users can simply chat with the AI, and it will update the board by creating, editing, moving, or deleting tasks.
@@ -27,6 +29,8 @@ This project helped me understand how AI can be integrated into real software wh
 
 ## How It Works
 
+<img width="1465" height="857" alt="Screenshot 2026-07-02 at 11 33 29 PM" src="https://github.com/user-attachments/assets/9720cad9-0fa5-4d43-8f9f-9a3d1b16cae1" />
+
 Users create an account and log in to the application. From there, they can manage their Kanban board manually or use the AI assistant.
 
 When a user sends a message, the backend retrieves the current board data, sends the request to the AI model, validates the response, checks permissions, and safely performs the requested actions.
@@ -49,24 +53,58 @@ The AI never communicates directly with the database. Every action is verified a
 
 ---
 
-## Security
+## Security Assessment & Remediation
 
-Security was one of the biggest focuses while building this project. I wanted to follow secure software development practices while also protecting the AI agent from common attacks.
+As part of the development process, I performed a comprehensive application security review against the Kanban app and systematically remediated the identified findings.
 
-Implemented security features include:
+### Initial Security Assessment
 
-- Password hashing with bcrypt
-- JWT authentication
-- Secure HttpOnly cookies
-- Protected API routes
-- Role and ownership validation
-- Input validation using Pydantic
-- SQL injection protection through SQLAlchemy
-- Rate limiting
-- Environment variable and secret management
-- AI prompt validation
-- Permission checks before AI actions are executed
-- Audit logging for important security events
+The initial review identified:
+
+- **1 Critical**
+- **3 High**
+- **8 Medium**
+- **7 Low**
+
+Key issues included:
+
+- Plaintext API key exposure
+- Hardcoded JWT fallback secret
+- Default seed credentials
+- Prompt injection bypass opportunities
+- JWT storage in `localStorage`
+- Missing RBAC on audit log endpoints
+- Second-order prompt injection risks
+- AI action validation improvements
+- Additional architecture and hardening recommendations
+
+### Security Remediation
+
+After implementing the recommended fixes, the application now includes:
+
+- Secure secrets management
+- Hardened JWT authentication
+- HttpOnly cookie-based sessions
+- Zero-trust ownership validation
+- Prompt injection hardening
+- Second-order prompt sanitization
+- AI action type validation
+- Improved RBAC
+- Secure Docker configuration
+- Additional API hardening
+
+### Results
+
+The post-remediation security audit showed:
+
+| Severity | Before | After |
+|----------|--------:|------:|
+| Critical | 1 | **0** |
+| High | 3 | **0** |
+| Medium | 8 | **0** |
+| Low | 7 | **1** |
+
+**Overall:** approximately **95% of identified security findings were remediated**, resulting in a significantly hardened application with layered defenses aligned with OWASP Top 10 and OWASP LLM Top 10 recommendations.
 
 The project was designed with **OWASP security recommendations** in mind, including protections against:
 
@@ -94,6 +132,9 @@ Every AI request is validated before it can modify application data, helping pre
 ## How the security works in detail:
 
 ### Prompt Injection Firewall (OWASP LLM01)
+
+<img width="363" height="725" alt="Screenshot 2026-07-02 at 11 43 03 PM" src="https://github.com/user-attachments/assets/8f2891bb-e25c-4cc3-bdba-25fef20fda30" />
+
 
 - **How it works:** Before the LLM is invoked, `security.py` scans the user's input against a robust regex denylist (e.g., matching `"ignore previous instructions"`, `"system prompt"`, `"expose env"`).
 - **Attack Mitigated:** Prevents attackers from hijacking the agent's instructions or tricking it into leaking sensitive backend configurations.
