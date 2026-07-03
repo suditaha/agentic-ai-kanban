@@ -162,6 +162,9 @@ Every AI request is validated before it can modify application data, helping pre
 
 ### Strict Input Validation (OWASP A03 – Injection)
 
+<img width="364" height="731" alt="Screenshot 2026-07-03 at 12 28 03 AM" src="https://github.com/user-attachments/assets/f6d5fb7a-0568-4a59-9be8-3a148cb5d104" />
+
+
 - **How it works:** FastAPI and Pydantic define strict schemas for all inbound data. For example, `CardCreate` limits:
   - Titles to **255 characters**
   - Descriptions to **2,000 characters**
